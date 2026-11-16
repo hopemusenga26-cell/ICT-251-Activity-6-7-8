@@ -132,10 +132,17 @@ function makeCard(record) {
   icon.className = "badge-icon";
   icon.setAttribute("aria-hidden", "true");
   icon.innerHTML = ICONS[record.category] || ICONS.default;
+  // Category and report number stacked, status badge on the right.
   const meta = document.createElement("p");
   meta.className = "card-meta";
-  meta.textContent = `#${record.id}, ${record.category}`;
-  top.append(icon, meta);
+  const category = document.createElement("span");
+  category.className = "card-category";
+  category.textContent = record.category;
+  const number = document.createElement("span");
+  number.className = "card-id";
+  number.textContent = `Report #${record.id}`;
+  meta.append(category, number);
+  top.append(icon, meta, makeBadge(record.status));
 
   const title = document.createElement("h3");
   title.textContent = record.title;
@@ -155,7 +162,6 @@ function makeCard(record) {
   const foot = document.createElement("div");
   foot.className = "card-foot";
   foot.append(
-    makeBadge(record.status),
     makeButton("View", "btn-secondary", "view", record.id, record.title),
     makeButton("Edit", "btn-secondary", "edit", record.id, record.title),
     makeButton("Delete", "btn-danger", "delete", record.id, record.title)
