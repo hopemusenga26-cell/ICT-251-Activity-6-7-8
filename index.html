@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campus Maintenance Requests</title>
+  <meta name="description" content="Report and track broken lights, taps, furniture and building problems on campus.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%23FFC629'/%3E%3Cpath d='M20.5 7.5a5 5 0 0 0-6.3 6.3l-6.6 6.6a2 2 0 1 0 2.8 2.8l6.6-6.6a5 5 0 0 0 6.3-6.3l-3 3-2.8-.8-.8-2.8z' fill='%230D1B2E'/%3E%3C/svg%3E">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Main">
+      <a class="brand" href="#home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M15.5 3.5a4.5 4.5 0 0 0-5.7 5.7l-6 6a1.8 1.8 0 1 0 2.5 2.5l6-6a4.5 4.5 0 0 0 5.7-5.7l-2.7 2.7-2.5-.7-.7-2.5z"/></svg>
+        </span>
+        <span>Campus Maintenance</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#manage">Manage Records</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button type="button" class="btn btn-ghost theme-toggle" id="theme-toggle" aria-pressed="false">Light mode</button>
+        <a class="btn btn-primary" href="#manage">Report a problem</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section id="home" class="hero" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <h1 id="hero-title">Spotted something broken? Get it <span class="hl">fixed</span>.</h1>
+          <p class="lead">Campus Maintenance Requests lets students and staff report broken lights, leaking taps, damaged furniture and building problems, then follow each request until it is completed.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="#manage">Report a problem</a>
+            <a class="btn btn-secondary btn-lg" href="#records">View requests</a>
+          </div>
+        </div>
+        <ul class="status-board" aria-label="Requests by status">
+          <li class="status-tile" data-status="Pending">
+            <span class="tile-count" id="count-pending">0</span>
+            <span class="tile-label"><span class="dot dot-pending" aria-hidden="true"></span>Pending</span>
+          </li>
+          <li class="status-tile" data-status="In progress">
+            <span class="tile-count" id="count-progress">0</span>
+            <span class="tile-label"><span class="dot dot-progress" aria-hidden="true"></span>In progress</span>
+          </li>
+          <li class="status-tile" data-status="Completed">
+            <span class="tile-count" id="count-completed">0</span>
+            <span class="tile-label"><span class="dot dot-completed" aria-hidden="true"></span>Completed</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="manage" class="band" aria-labelledby="manage-title">
+      <div class="container band-grid">
+        <div class="band-copy">
+          <h2 id="manage-title">Report or update a request</h2>
+          <p>Give the problem a short title, pick the type of fault, and describe exactly where it is. Choose <strong>Edit</strong> on any request below to change it here.</p>
+          <ul class="band-tips">
+            <li>Include the building and room number.</li>
+            <li>One problem per request makes it faster to assign.</li>
+            <li>Set the status to Completed once the fix is confirmed.</li>
+          </ul>
+        </div>
+
+        <form id="record-form" class="form-card" novalidate>
+          <div class="form-head">
+            <h3 id="form-title">New request</h3>
+            <span class="form-id" id="form-id" hidden></span>
+          </div>
+
+          <div class="field">
+            <label for="title">Title</label>
+            <input id="title" name="title" type="text" maxlength="80" required
+                   aria-describedby="title-hint title-error" autocomplete="off">
+            <p class="hint" id="title-hint">3 to 80 characters, e.g. "Broken classroom light"</p>
+            <p class="error" id="title-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label for="category">Category</label>
+            <select id="category" name="category" required aria-describedby="category-error">
+              <option value="">Choose a category</option>
+              <option>Electrical</option>
+              <option>Plumbing</option>
+              <option>Furniture</option>
+              <option>Building &amp; Grounds</option>
+            </select>
+            <p class="error" id="category-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="4" maxlength="300" required
+                      aria-describedby="description-hint description-error"></textarea>
+            <p class="hint" id="description-hint"><span id="description-count">0</span>/300 characters, at least 5</p>
+            <p class="error" id="description-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label for="status">Status</label>
+            <select id="status" name="status" required aria-describedby="status-error">
+              <option>Pending</option>
+              <option>In progress</option>
+              <option>Completed</option>
+            </select>
+            <p class="error" id="status-error" aria-live="polite"></p>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="save-btn">Add request</button>
+            <button type="button" class="btn btn-secondary" id="cancel-edit" hidden>Cancel edit</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="records" class="records" aria-labelledby="records-title">
+      <div class="container">
+        <div class="records-head">
+          <h2 id="records-title">All requests</h2>
+          <p class="result-count" id="result-count" aria-live="polite"></p>
+        </div>
+
+        <div class="toolbar" role="search">
+          <div class="field field-inline">
+            <label for="search">Search by title</label>
+            <input id="search" type="search" placeholder="e.g. light, tap, chair" autocomplete="off">
+          </div>
+          <div class="field field-inline">
+            <label for="filter-status">Filter by status</label>
+            <select id="filter-status">
+              <option value="">All statuses</option>
+              <option>Pending</option>
+              <option>In progress</option>
+              <option>Completed</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-secondary" id="clear-filters">Clear</button>
+        </div>
+
+        <div class="message" id="message" role="status" aria-live="polite" hidden></div>
+
+        <ul class="record-grid" id="record-list" aria-label="Maintenance requests"></ul>
+        <p class="empty" id="empty-state" hidden></p>
+      </div>
+    </section>
+
+    <section id="about" class="about" aria-labelledby="about-title">
+      <div class="container about-grid">
+        <div>
+          <h2 id="about-title">About this project</h2>
+          <p>Campus Maintenance Requests is a web system for reporting and tracking maintenance problems around campus. Each request has a title, a category, a description and a status of Pending, In progress or Completed.</p>
+          <p class="note"><strong>This version is connected to a live backend.</strong> Every request you add, edit or delete is saved in the shared database, so the same records appear on any device. The sample requests are made up.</p>
+          <h3>How to use it</h3>
+          <ol class="steps">
+            <li>Fill in the form under <strong>Report or update a request</strong> and choose <strong>Add request</strong>.</li>
+            <li>Find requests with the title search or the status filter.</li>
+            <li>Use <strong>View</strong> for full details, <strong>Edit</strong> to change a request, or <strong>Delete</strong> to remove it.</li>
+          </ol>
+          <p>If the list does not load at first, wait a minute: the free server may be starting up.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" data-api-path="/" href="https://campus-maintenance-api.onrender.com/">Open the API guide</a>
+            <a class="btn btn-secondary" data-api-path="/health" href="https://campus-maintenance-api.onrender.com/health">Check /health</a>
+          </div>
+        </div>
+        <dl class="facts">
+          <div><dt>Project</dt><dd>Campus Maintenance Requests</dd></div>
+          <div><dt>Student</dt><dd>Musenga Hope Sichula</dd></div>
+          <div><dt>Student number</dt><dd>202511308</dd></div>
+          <div><dt>Course</dt><dd>ICT251 Web Technologies, Activity 8</dd></div>
+          <div><dt>Backend API</dt><dd id="api-url">https://campus-maintenance-api.onrender.com</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>Campus Maintenance Requests, Mulungushi University</p>
+      <p>Musenga Hope Sichula, 202511308</p>
+    </div>
+  </footer>
+
+  <dialog id="view-dialog" class="view-dialog" aria-labelledby="view-title">
+    <div class="dialog-body">
+      <div class="dialog-head">
+        <span class="badge-icon" id="view-icon" aria-hidden="true"></span>
+        <div>
+          <p class="view-meta" id="view-meta"></p>
+          <h3 id="view-title"></h3>
+        </div>
+      </div>
+      <dl class="view-details">
+        <div><dt>Category</dt><dd id="view-category"></dd></div>
+        <div><dt>Status</dt><dd id="view-status"></dd></div>
+        <div class="full"><dt>Description</dt><dd id="view-description"></dd></div>
+      </dl>
+      <form method="dialog" class="dialog-actions">
+        <button class="btn btn-primary" value="close">Close</button>
+      </form>
+    </div>
+  </dialog>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
