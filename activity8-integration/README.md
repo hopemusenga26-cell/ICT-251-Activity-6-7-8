@@ -4,7 +4,7 @@ ICT251 Web Technologies, Mulungushi University
 Musenga Hope Sichula, 202511308
 
 The Activity 6 frontend connected to the Activity 7 Node.js API. Adding, viewing, editing and
-deleting requests on the page now reads and writes the shared SQLite database through the API,
+deleting fault reports on the page now reads and writes the shared SQLite database through the API,
 so the same records appear on any device.
 
 ## What changed from Activity 6
@@ -15,6 +15,9 @@ so the same records appear on any device.
 | `js/data.js` | Same `recordService` methods, now calling the API with `fetch` and checking `response.ok`; localStorage records and seeding removed |
 | `js/app.js` | Shows "Loading records", disables Save while a request runs, shows success only after the backend confirms, keeps the input on failure |
 | `index.html` | About section with usage steps and links to the API guide and `/health` |
+
+Reports include the reporter's name, student number and location, which the API saves with the
+fault details.
 
 The colour theme choice is still remembered in the browser; records are not.
 
@@ -31,8 +34,8 @@ The colour theme choice is still remembered in the browser; records are not.
 
 ## How to test
 
-1. Add a request → it appears on the page and at `/api/records`.
+1. Send a report → it appears on the page and at `/api/records`.
 2. Edit it and save → the change appears at `/api/records/:id` with the same id.
 3. Delete it after confirming → `/api/records/:id` returns 404.
-4. Stop the backend and try to add a request → a clear error appears and the typed values stay.
-5. Open the site on another device → the same records load.
+4. Stop the backend and try to send a report → a clear error appears and the typed values stay.
+5. Open the site on another device → the same reports load.

@@ -176,6 +176,19 @@ input, select, textarea, button { font: inherit; }
   width: 0.9rem; height: 0.9rem; border-radius: 50%; background: var(--navy-900);
 }
 
+.band-subhead { color: var(--navy-900); font-size: 1.45rem; margin: 1.75rem 0 0.75rem; }
+.status-guide { margin: 0; display: grid; gap: 0.75rem; }
+.status-guide div {
+  padding: 0.8rem 1rem; border-radius: var(--radius-sm);
+  background: rgba(13, 27, 46, 0.08); border-left: 4px solid var(--navy-900);
+}
+.status-guide dt { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--navy-900); }
+.status-guide dd { margin: 0.15rem 0 0; color: var(--navy-900); }
+
+.status-guide .dot { box-shadow: 0 0 0 2px var(--navy-900); }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; align-items: start; }
+
 .form-card {
   background: var(--navy-800); color: var(--grey);
   border-radius: var(--radius-lg); padding: clamp(1.4rem, 3vw, 2.2rem);
@@ -243,6 +256,11 @@ input, select, textarea, button { font: inherit; }
 .badge-icon svg { width: 24px; height: 24px; fill: none; stroke: var(--navy-900); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .card-meta { margin: 0; font-size: 0.92rem; color: var(--text); }
 .record-card h3 { margin: 0; font-size: 1.45rem; overflow-wrap: anywhere; }
+.card-location {
+  margin: -0.35rem 0 0; display: flex; align-items: flex-start; gap: 0.4rem;
+  color: var(--strong); font-weight: 500; font-size: 0.95rem; overflow-wrap: anywhere;
+}
+.card-location svg { flex: none; width: 16px; height: 16px; margin-top: 0.2rem; fill: none; stroke: var(--yellow); stroke-width: 2; }
 .record-card .desc {
   margin: 0; overflow-wrap: anywhere;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
@@ -271,6 +289,9 @@ input, select, textarea, button { font: inherit; }
 .about { padding: clamp(3rem, 7vw, 5rem) 0; background: var(--surface); border-top: 1px solid var(--line); }
 .about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(2rem, 5vw, 4rem); }
 .note { padding: 1rem 1.2rem; border-left: 5px solid var(--yellow); background: var(--bg); border-radius: var(--radius-sm); }
+.about h3 { margin-top: 1.5rem; }
+.steps { padding-left: 1.3rem; margin: 0 0 1rem; display: grid; gap: 0.4rem; }
+.steps li::marker { color: var(--yellow); font-weight: 700; }
 .facts { margin: 0; display: grid; gap: 0.75rem; align-content: start; }
 .facts div { padding: 0.9rem 1.1rem; background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius-sm); }
 .facts dt { font-size: 0.9rem; }
@@ -318,5 +339,6 @@ input, select, textarea, button { font: inherit; }
   .status-tile { flex-direction: row; align-items: baseline; }
   .tile-count { font-size: 2.4rem; }
   .view-details { grid-template-columns: 1fr; }
+  .field-row { grid-template-columns: 1fr; }
   .toolbar .btn { width: 100%; }
 }

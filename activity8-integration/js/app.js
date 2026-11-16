@@ -6,10 +6,13 @@ import { API_BASE_URL } from "./config.js";
 
 const STATUSES = ["Pending", "In progress", "Completed"];
 const LIMITS = {
-  title: [3, 80, "Title"],
+  reporter_name: [2, 80, "Your name"],
+  location: [3, 100, "Location"],
+  title: [3, 80, "Fault title"],
   category: [2, 40, "Category"],
   description: [5, 300, "Description"]
 };
+const STUDENT_NUMBER = /^\d{6,12}$/;
 
 // Static icons for each category (no user data is placed in these).
 const ICONS = {
@@ -17,12 +20,20 @@ const ICONS = {
   "Plumbing": '<svg viewBox="0 0 24 24"><path d="M12 3c3.5 4.2 6 7.4 6 10.5a6 6 0 0 1-12 0C6 10.4 8.5 7.2 12 3z"/></svg>',
   "Furniture": '<svg viewBox="0 0 24 24"><path d="M6 11V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v6M4 11h16v4H4zM6 15v6M18 15v6"/></svg>',
   "Building & Grounds": '<svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V8l7-5 7 5v13M10 21v-6h4v6"/></svg>',
+  "Appliances": '<svg viewBox="0 0 24 24"><path d="M3 5h18v14H3zM15 5v14M6 9h6M6 13h6M18 9v.01M18 13v.01"/></svg>',
+  "IT & Network": '<svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5v.01"/></svg>',
+  "Other": '<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8v5M12 16v.01"/></svg>',
   "default": '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg>'
 };
 
 const $ = id => document.getElementById(id);
 const form = $("record-form");
+const PIN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+
 const fields = {
+  reporter_name: $("reporter_name"),
+  student_number: $("student_number"),
+  location: $("location"),
   title: $("title"),
   category: $("category"),
   description: $("description"),
@@ -67,6 +78,8 @@ function readForm() {
     if (length === 0) errors[name] = `${label} is required.`;
     else if (length < min || length > max) errors[name] = `${label} must have ${min} to ${max} characters.`;
   }
+  if (!record.student_number) errors.student_number = "Student number is required.";
+  else if (!STUDENT_NUMBER.test(record.student_number)) errors.student_number = "Student number must be 6 to 12 digits.";
   if (!STATUSES.includes(record.status)) {
     errors.status = "Status must be Pending, In progress or Completed.";
   }
@@ -103,7 +116,7 @@ function makeButton(label, className, action, id, title) {
   button.textContent = label;
   button.dataset.action = action;
   button.dataset.id = id;
-  button.setAttribute("aria-label", `${label} request ${id}: ${title}`);
+  button.setAttribute("aria-label", `${label} report ${id}: ${title}`);
   return button;
 }
 
@@ -131,6 +144,14 @@ function makeCard(record) {
   desc.className = "desc";
   desc.textContent = record.description;
 
+  // Location line: fixed icon plus the user's text set with textContent.
+  const place = document.createElement("p");
+  place.className = "card-location";
+  place.innerHTML = PIN_ICON;
+  const placeText = document.createElement("span");
+  placeText.textContent = record.location || "Location not given";
+  place.append(placeText);
+
   const foot = document.createElement("div");
   foot.className = "card-foot";
   foot.append(
@@ -140,7 +161,7 @@ function makeCard(record) {
     makeButton("Delete", "btn-danger", "delete", record.id, record.title)
   );
 
-  item.append(top, title, desc, foot);
+  item.append(top, title, place, desc, foot);
   return item;
 }
 
@@ -155,16 +176,16 @@ function render() {
 
   list.replaceChildren(...shown.map(makeCard));
 
-  const word = shown.length === 1 ? "request" : "requests";
+  const word = shown.length === 1 ? "report" : "reports";
   $("result-count").textContent = (term || status)
-    ? `Showing ${shown.length} of ${records.length} ${records.length === 1 ? "request" : "requests"}`
+    ? `Showing ${shown.length} of ${records.length} ${records.length === 1 ? "report" : "reports"}`
     : `${shown.length} ${word}`;
 
   if (records.length === 0) {
-    emptyState.textContent = "No requests yet. Use the form above to report the first problem.";
+    emptyState.textContent = "No fault reports yet. Use the form above to send the first one to the help desk.";
     emptyState.hidden = false;
   } else if (shown.length === 0) {
-    emptyState.textContent = "No requests match your search or filter. Change the search words or choose Clear.";
+    emptyState.textContent = "No reports match your search or filter. Change the search words or choose Clear.";
     emptyState.hidden = false;
   } else {
     emptyState.hidden = true;
@@ -187,8 +208,8 @@ async function loadRecords() {
   } catch (error) {
     records = [];
     list.replaceChildren();
-    emptyState.textContent = "Requests could not be loaded. Check your connection and refresh the page.";
-    showMessage(`Could not load requests: ${error.message}`, "error");
+    emptyState.textContent = "Reports could not be loaded. Check your connection and refresh the page.";
+    showMessage(`Could not load reports: ${error.message}`, "error");
   }
 }
 
@@ -196,10 +217,10 @@ async function loadRecords() {
 
 function setEditMode(record) {
   editingId = record ? record.id : null;
-  $("form-title").textContent = record ? "Edit request" : "New request";
+  $("form-title").textContent = record ? "Edit fault report" : "New fault report";
   $("form-id").hidden = !record;
-  $("form-id").textContent = record ? `Request #${record.id}` : "";
-  saveBtn.textContent = record ? "Save changes" : "Add request";
+  $("form-id").textContent = record ? `Report #${record.id}` : "";
+  saveBtn.textContent = record ? "Save changes" : "Send report";
   cancelBtn.hidden = !record;
 }
 
@@ -229,20 +250,20 @@ async function handleSubmit(event) {
   const wasEditing = editingId;
   const idleLabel = saveBtn.textContent;
   saveBtn.disabled = true;
-  saveBtn.textContent = wasEditing ? "Saving…" : "Adding…";
+  saveBtn.textContent = wasEditing ? "Saving…" : "Sending…";
   try {
     if (wasEditing) {
       const updated = await recordService.update(wasEditing, record);
-      showMessage(`Request #${updated.id} updated.`);
+      showMessage(`Report #${updated.id} updated.`);
     } else {
       const created = await recordService.create(record);
-      showMessage(`Request #${created.id} added.`);
+      showMessage(`Report #${created.id} sent to the help desk.`);
     }
     resetForm();
     await loadRecords();
   } catch (error) {
     // Keep what the user typed so they can try again.
-    showMessage(`${wasEditing ? "Changes were not saved" : "The request was not added"}: ${error.message}`, "error");
+    showMessage(`${wasEditing ? "Changes were not saved" : "The report was not sent"}: ${error.message}`, "error");
   } finally {
     saveBtn.disabled = false;
     if (saveBtn.textContent.endsWith("…")) saveBtn.textContent = idleLabel;
@@ -257,21 +278,24 @@ async function viewRecord(id) {
   try {
     const record = await recordService.get(id);
     $("view-icon").innerHTML = ICONS[record.category] || ICONS.default;
-    $("view-meta").textContent = `Request #${record.id}`;
+    $("view-meta").textContent = `Report #${record.id}`;
     $("view-title").textContent = record.title;
     $("view-category").textContent = record.category;
     $("view-status").replaceChildren(makeBadge(record.status));
     $("view-description").textContent = record.description;
+    $("view-location").textContent = record.location || "Not given";
+    $("view-reporter").textContent = record.reporter_name || "Not given";
+    $("view-student-number").textContent = record.student_number || "Not given";
     viewDialog.showModal();
   } catch (error) {
-    showMessage(`Could not open request #${id}: ${error.message}`, "error");
+    showMessage(`Could not open report #${id}: ${error.message}`, "error");
   }
 }
 
 async function editRecord(id) {
   try {
     const record = await recordService.get(id);
-    for (const name of Object.keys(fields)) fields[name].value = record[name];
+    for (const name of Object.keys(fields)) fields[name].value = record[name] ?? "";
     showFieldErrors({});
     setEditMode(record);
     updateCharCount();
@@ -279,22 +303,22 @@ async function editRecord(id) {
     $("manage").scrollIntoView();
     fields.title.focus({ preventScroll: true });
   } catch (error) {
-    showMessage(`Could not edit request #${id}: ${error.message}`, "error");
+    showMessage(`Could not edit report #${id}: ${error.message}`, "error");
   }
 }
 
 async function deleteRecord(id, button) {
   const record = records.find(r => r.id === id);
   const name = record ? `"${record.title}"` : `#${id}`;
-  if (!confirm(`Delete request ${name}? This cannot be undone.`)) {
-    showMessage("Delete cancelled. The request was kept.", "info");
+  if (!confirm(`Delete report ${name}? This cannot be undone.`)) {
+    showMessage("Delete cancelled. The report was kept.", "info");
     return;
   }
   button.disabled = true;
   try {
     await recordService.remove(id);
     if (editingId === id) resetForm();
-    showMessage(`Deleted request ${name}.`);
+    showMessage(`Deleted report ${name}.`);
     await loadRecords();
   } catch (error) {
     showMessage(`Could not delete ${name}: ${error.message}`, "error");
@@ -340,7 +364,7 @@ form.addEventListener("submit", handleSubmit);
 cancelBtn.addEventListener("click", () => {
   resetForm();
   render();
-  showMessage("Edit cancelled. The saved request was not changed.", "info");
+  showMessage("Edit cancelled. The saved report was not changed.", "info");
 });
 fields.description.addEventListener("input", updateCharCount);
 for (const name of Object.keys(fields)) {
@@ -360,11 +384,11 @@ $("clear-filters").addEventListener("click", () => {
   searchInput.focus();
 });
 
-// Point the About links at whichever backend config.js selected.
+// Point any API links (Activity 8 About section) at the backend chosen in config.js.
 for (const link of document.querySelectorAll("[data-api-path]")) {
   link.href = API_BASE_URL + link.dataset.apiPath;
 }
-$("api-url").textContent = API_BASE_URL;
+if ($("api-url") && API_BASE_URL) $("api-url").textContent = API_BASE_URL;
 
 applyTheme(readTheme());
 loadRecords();

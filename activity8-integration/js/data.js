@@ -32,13 +32,16 @@ async function request(path, method = "GET", body) {
   return data;
 }
 
-// Only the four editable fields are sent; the backend generates the id.
+// Only the editable fields are sent; the backend generates the id.
 function editable(record) {
   return {
     title: record.title,
     category: record.category,
     description: record.description,
-    status: record.status
+    status: record.status,
+    reporter_name: record.reporter_name,
+    student_number: record.student_number,
+    location: record.location
   };
 }
 

@@ -44,9 +44,17 @@ function readFile(name) {
   return fs.readFileSync(path.join(__dirname, name), "utf8");
 }
 
+// True when an older version of the table (without the reporter columns) exists.
+async function hasOldLayout() {
+  const { rows } = await query("SELECT name FROM pragma_table_info('records')");
+  return rows.length > 0 && !rows.some(row => row.name === "reporter_name");
+}
+
 // Create the table if needed, then add the starting records only when it is empty.
+// A table from the first version, which held only the sample records, is
+// rebuilt once with the reporter columns.
 async function setup({ reset = false } = {}) {
-  if (reset) await client.execute("DROP TABLE IF EXISTS records");
+  if (reset || await hasOldLayout()) await client.execute("DROP TABLE IF EXISTS records");
   await client.executeMultiple(readFile("schema.sql"));
   const { rows } = await query("SELECT COUNT(*) AS count FROM records");
   if (Number(rows[0].count) === 0) await client.executeMultiple(readFile("seed.sql"));

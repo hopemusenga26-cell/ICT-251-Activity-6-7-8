@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Campus Maintenance Requests</title>
-  <meta name="description" content="Report and track broken lights, taps, furniture and building problems on campus.">
+  <meta name="description" content="Report broken sockets, leaking taps, damaged furniture and other faults on campus to the help desk, and track each report until it is fixed.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
       </ul>
       <div class="nav-actions">
         <button type="button" class="btn btn-ghost theme-toggle" id="theme-toggle" aria-pressed="false">Light mode</button>
-        <a class="btn btn-primary" href="#manage">Report a problem</a>
+        <a class="btn btn-primary" href="#manage">Report a fault</a>
       </div>
     </nav>
   </header>
@@ -39,13 +39,13 @@
       <div class="container hero-grid">
         <div class="hero-copy">
           <h1 id="hero-title">Spotted something broken? Get it <span class="hl">fixed</span>.</h1>
-          <p class="lead">Campus Maintenance Requests lets students and staff report broken lights, leaking taps, damaged furniture and building problems, then follow each request until it is completed.</p>
+          <p class="lead">Report a fault anywhere on campus, from a dead socket or leaking tap to broken furniture or a faulty appliance. Your report goes straight to the Campus Help Desk, and you can track it until it is fixed.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary btn-lg" href="#manage">Report a problem</a>
-            <a class="btn btn-secondary btn-lg" href="#records">View requests</a>
+            <a class="btn btn-primary btn-lg" href="#manage">Report a fault</a>
+            <a class="btn btn-secondary btn-lg" href="#records">Track reports</a>
           </div>
         </div>
-        <ul class="status-board" aria-label="Requests by status">
+        <ul class="status-board" aria-label="Reports by status">
           <li class="status-tile" data-status="Pending">
             <span class="tile-count" id="count-pending">0</span>
             <span class="tile-label"><span class="dot dot-pending" aria-hidden="true"></span>Pending</span>
@@ -65,26 +65,51 @@
     <section id="manage" class="band" aria-labelledby="manage-title">
       <div class="container band-grid">
         <div class="band-copy">
-          <h2 id="manage-title">Report or update a request</h2>
-          <p>Give the problem a short title, pick the type of fault, and describe exactly where it is. Choose <strong>Edit</strong> on any request below to change it here.</p>
-          <ul class="band-tips">
-            <li>Include the building and room number.</li>
-            <li>One problem per request makes it faster to assign.</li>
-            <li>Set the status to Completed once the fix is confirmed.</li>
-          </ul>
+          <h2 id="manage-title">Report a fault to the help desk</h2>
+          <p>Tell the help desk who you are, where the problem is and what is wrong. Choose <strong>Edit</strong> on any report below to update it here.</p>
+          <h3 class="band-subhead">What each status means</h3>
+          <dl class="status-guide">
+            <div><dt><span class="dot dot-pending" aria-hidden="true"></span>Pending</dt><dd>The help desk has received your report and will assign it.</dd></div>
+            <div><dt><span class="dot dot-progress" aria-hidden="true"></span>In progress</dt><dd>A technician has been assigned and is working on the fault.</dd></div>
+            <div><dt><span class="dot dot-completed" aria-hidden="true"></span>Completed</dt><dd>The fault has been fixed and checked.</dd></div>
+          </dl>
         </div>
 
         <form id="record-form" class="form-card" novalidate>
           <div class="form-head">
-            <h3 id="form-title">New request</h3>
+            <h3 id="form-title">New fault report</h3>
             <span class="form-id" id="form-id" hidden></span>
           </div>
 
+          <div class="field-row">
+            <div class="field">
+              <label for="reporter_name">Your name</label>
+              <input id="reporter_name" name="reporter_name" type="text" maxlength="80" required
+                     aria-describedby="reporter_name-error" autocomplete="name">
+              <p class="error" id="reporter_name-error" aria-live="polite"></p>
+            </div>
+            <div class="field">
+              <label for="student_number">Student number</label>
+              <input id="student_number" name="student_number" type="text" inputmode="numeric" maxlength="12" required
+                     aria-describedby="student_number-hint student_number-error" autocomplete="off">
+              <p class="hint" id="student_number-hint">6 to 12 digits</p>
+              <p class="error" id="student_number-error" aria-live="polite"></p>
+            </div>
+          </div>
+
           <div class="field">
-            <label for="title">Title</label>
+            <label for="location">Location</label>
+            <input id="location" name="location" type="text" maxlength="100" required
+                   aria-describedby="location-hint location-error" autocomplete="off">
+            <p class="hint" id="location-hint">Building and room, e.g. "Room B12, Block B"</p>
+            <p class="error" id="location-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label for="title">Fault title</label>
             <input id="title" name="title" type="text" maxlength="80" required
                    aria-describedby="title-hint title-error" autocomplete="off">
-            <p class="hint" id="title-hint">3 to 80 characters, e.g. "Broken classroom light"</p>
+            <p class="hint" id="title-hint">3 to 80 characters, e.g. "Socket not working"</p>
             <p class="error" id="title-error" aria-live="polite"></p>
           </div>
 
@@ -95,7 +120,10 @@
               <option>Electrical</option>
               <option>Plumbing</option>
               <option>Furniture</option>
+              <option>Appliances</option>
+              <option>IT &amp; Network</option>
               <option>Building &amp; Grounds</option>
+              <option>Other</option>
             </select>
             <p class="error" id="category-error" aria-live="polite"></p>
           </div>
@@ -104,22 +132,23 @@
             <label for="description">Description</label>
             <textarea id="description" name="description" rows="4" maxlength="300" required
                       aria-describedby="description-hint description-error"></textarea>
-            <p class="hint" id="description-hint"><span id="description-count">0</span>/300 characters, at least 5</p>
+            <p class="hint" id="description-hint">What is wrong and since when. <span id="description-count">0</span>/300 characters, at least 5</p>
             <p class="error" id="description-error" aria-live="polite"></p>
           </div>
 
           <div class="field">
             <label for="status">Status</label>
-            <select id="status" name="status" required aria-describedby="status-error">
+            <select id="status" name="status" required aria-describedby="status-hint status-error">
               <option>Pending</option>
               <option>In progress</option>
               <option>Completed</option>
             </select>
+            <p class="hint" id="status-hint">New reports start as Pending. The help desk updates it as the work goes on.</p>
             <p class="error" id="status-error" aria-live="polite"></p>
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="btn btn-primary" id="save-btn">Add request</button>
+            <button type="submit" class="btn btn-primary" id="save-btn">Send report</button>
             <button type="button" class="btn btn-secondary" id="cancel-edit" hidden>Cancel edit</button>
           </div>
         </form>
@@ -129,14 +158,14 @@
     <section id="records" class="records" aria-labelledby="records-title">
       <div class="container">
         <div class="records-head">
-          <h2 id="records-title">All requests</h2>
+          <h2 id="records-title">All fault reports</h2>
           <p class="result-count" id="result-count" aria-live="polite"></p>
         </div>
 
         <div class="toolbar" role="search">
           <div class="field field-inline">
             <label for="search">Search by title</label>
-            <input id="search" type="search" placeholder="e.g. light, tap, chair" autocomplete="off">
+            <input id="search" type="search" placeholder="e.g. socket, tap, chair" autocomplete="off">
           </div>
           <div class="field field-inline">
             <label for="filter-status">Filter by status</label>
@@ -152,7 +181,7 @@
 
         <div class="message" id="message" role="status" aria-live="polite" hidden></div>
 
-        <ul class="record-grid" id="record-list" aria-label="Maintenance requests"></ul>
+        <ul class="record-grid" id="record-list" aria-label="Fault reports"></ul>
         <p class="empty" id="empty-state" hidden></p>
       </div>
     </section>
@@ -161,8 +190,8 @@
       <div class="container about-grid">
         <div>
           <h2 id="about-title">About this project</h2>
-          <p>Campus Maintenance Requests is a web system for reporting and tracking maintenance problems around campus. Each request has a title, a category, a description and a status of Pending, In progress or Completed.</p>
-          <p class="note"><strong>This version uses browser demonstration data.</strong> Requests are saved in this browser with localStorage, so they will not appear on another device or browser. The sample requests are made up.</p>
+          <p>Campus Maintenance Requests is a fault reporting system for students. Any student can report a problem around campus, such as a broken socket, a leaking tap, damaged furniture or a faulty appliance. Each report reaches the Campus Help Desk, which moves it from Pending to In progress to Completed, so students can see what is happening to their report.</p>
+          <p class="note"><strong>This version uses browser demonstration data.</strong> Reports are saved in this browser with localStorage, so they will not appear on another device or browser. The sample reports, names and student numbers are made up.</p>
         </div>
         <dl class="facts">
           <div><dt>Project</dt><dd>Campus Maintenance Requests</dd></div>
@@ -193,6 +222,9 @@
       <dl class="view-details">
         <div><dt>Category</dt><dd id="view-category"></dd></div>
         <div><dt>Status</dt><dd id="view-status"></dd></div>
+        <div class="full"><dt>Location</dt><dd id="view-location"></dd></div>
+        <div><dt>Reported by</dt><dd id="view-reporter"></dd></div>
+        <div><dt>Student number</dt><dd id="view-student-number"></dd></div>
         <div class="full"><dt>Description</dt><dd id="view-description"></dd></div>
       </dl>
       <form method="dialog" class="dialog-actions">

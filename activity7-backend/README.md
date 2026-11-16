@@ -3,7 +3,8 @@
 ICT251 Web Technologies, Mulungushi University
 Musenga Hope Sichula, 202511308
 
-An independent Node.js and Express REST API for the Campus Maintenance Requests system. Records are
+An independent Node.js and Express REST API for the Campus Maintenance Requests system, where students
+report campus faults to the help desk. Records are
 stored in a hosted SQLite database on Turso, so they are kept when the server sleeps or restarts. Open the base URL in a browser for the API guide.
 
 ## Routes
@@ -15,7 +16,7 @@ stored in a hosted SQLite database on Turso, so they are kept when the server sl
 | GET | `/api/records` | All records, or `[]` | 200 |
 | GET | `/api/records/:id` | One record | 200 |
 | POST | `/api/records` | Create a record | 201 |
-| PUT | `/api/records/:id` | Replace the four editable fields | 200 |
+| PUT | `/api/records/:id` | Replace the editable fields | 200 |
 | DELETE | `/api/records/:id` | Delete a record → `{"message":"Record deleted."}` | 200 |
 
 Errors are JSON with a `message` field: 400 for invalid input, invalid id or malformed JSON,
@@ -28,12 +29,19 @@ Errors are JSON with a `message` field: 400 for invalid input, invalid id or mal
   "title": "Broken classroom light",
   "category": "Electrical",
   "description": "The light in Room B12 does not switch on.",
-  "status": "Pending"
+  "status": "Pending",
+  "reporter_name": "Mwila Banda",
+  "student_number": "202410215",
+  "location": "Room B12, Block B"
 }
 ```
 
 `title` 3–80, `category` 2–40, `description` 5–300 characters after trimming; `status` is
 `Pending`, `In progress` or `Completed`. Any `id` in the body is ignored.
+
+The reporter fields are optional, so a body with only the four main fields is accepted. When sent,
+`reporter_name` must be 2–80 characters, `student_number` 6–12 digits and `location` 3–100
+characters. A missing or blank optional field is saved as `null`; PUT replaces all of them.
 
 ## Files
 
@@ -43,7 +51,7 @@ Errors are JSON with a `message` field: 400 for invalid input, invalid id or mal
 | `routes/records.js` | The five record routes and validation |
 | `db.js` | Connects to Turso (or a local SQLite file), creates the table, seeds it once; exports `query(sql, values)` |
 | `schema.sql` | `records` table with CHECK rules and an `updated_at` trigger |
-| `seed.sql` | Ten made-up records, inserted only when the table is empty |
+| `seed.sql` | Twelve made-up reports, inserted only when the table is empty |
 | `.env.example` | Copy to `.env` for local settings |
 
 ## Run locally
@@ -74,4 +82,4 @@ Under Environment add `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN` and `CLIENT_ORIGI
 
 Free Render services sleep when idle, so the first request can take up to a minute. Render's own
 disk is temporary, which is why the records live in the Turso database instead: they are kept
-through sleeps, restarts and redeploys. The ten starting records are added only when the table is empty.
+through sleeps, restarts and redeploys. The twelve starting reports are added only when the table is empty.
