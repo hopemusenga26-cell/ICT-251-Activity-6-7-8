@@ -1,6 +1,6 @@
 // Live backend base URL: HTTPS, no final slash.
 // When the page is opened from this computer (Live Server), the local API is used instead.
-const LIVE_API_URL = "https://ict-251-activity-6-7-8.onrender.com";
+const LIVE_API_URL = "https://campus-maintenance-api-202511308.onrender.com";
 const LOCAL_API_URL = "http://localhost:3000";
 
 const isLocalPage = ["localhost", "127.0.0.1"].includes(window.location.hostname);
