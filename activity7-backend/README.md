@@ -66,7 +66,8 @@ Then open http://localhost:3000. `npm run seed` resets the table to the starting
 
 ## Deploy on Render
 
-New → Web Service → connect this repository. Runtime **Node**, build command `npm install`,
+New → Web Service → connect this repository and set **Root Directory** to `activity7-backend`.
+Runtime **Node**, build command `npm install`,
 start command `npm start`, instance **Free**. Add `CLIENT_ORIGINS` (and optionally `DB_FILE`)
 under Environment.
 
