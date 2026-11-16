@@ -3,8 +3,8 @@
 ICT251 Web Technologies, Mulungushi University
 Musenga Hope Sichula, 202511308
 
-An independent Node.js and Express REST API for the Campus Maintenance Requests system, storing
-records in SQLite. Open the base URL in a browser for the API guide.
+An independent Node.js and Express REST API for the Campus Maintenance Requests system. Records are
+stored in a hosted SQLite database on Turso, so they are kept when the server sleeps or restarts. Open the base URL in a browser for the API guide.
 
 ## Routes
 
@@ -41,7 +41,7 @@ Errors are JSON with a `message` field: 400 for invalid input, invalid id or mal
 |---|---|
 | `server.js` | Express app, CORS, API guide, health route, error handling |
 | `routes/records.js` | The five record routes and validation |
-| `db.js` | Opens SQLite, creates the table, seeds it once; exports `query(sql, values)` |
+| `db.js` | Connects to Turso (or a local SQLite file), creates the table, seeds it once; exports `query(sql, values)` |
 | `schema.sql` | `records` table with CHECK rules and an `updated_at` trigger |
 | `seed.sql` | Ten made-up records, inserted only when the table is empty |
 | `.env.example` | Copy to `.env` for local settings |
@@ -61,16 +61,17 @@ Then open http://localhost:3000. `npm run seed` resets the table to the starting
 | Name | Example | Meaning |
 |---|---|---|
 | `PORT` | `3000` | Port (Render sets this itself) |
-| `DB_FILE` | `./data/records.db` | SQLite database file |
+| `TURSO_DATABASE_URL` | `libsql://campus-maintenance-<user>.turso.io` | Hosted SQLite database (used online) |
+| `TURSO_AUTH_TOKEN` | _(secret from Turso)_ | Token for that database; never commit it |
+| `DB_FILE` | `./data/records.db` | Local SQLite file, used only when `TURSO_DATABASE_URL` is empty |
 | `CLIENT_ORIGINS` | `https://my-site.netlify.app,http://127.0.0.1:5500` | Browser origins allowed by CORS, comma-separated |
 
 ## Deploy on Render
 
 New → Web Service → connect this repository and set **Root Directory** to `activity7-backend`.
-Runtime **Node**, build command `npm install`,
-start command `npm start`, instance **Free**. Add `CLIENT_ORIGINS` (and optionally `DB_FILE`)
-under Environment.
+Runtime **Node**, build command `npm install`, start command `npm start`, instance **Free**.
+Under Environment add `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN` and `CLIENT_ORIGINS`.
 
-Free Render services sleep when idle, so the first request can take up to a minute. Their local
-disk is temporary: when the service restarts, the SQLite file is re-created with the ten starting
-records, and records added after the last restart are not kept.
+Free Render services sleep when idle, so the first request can take up to a minute. Render's own
+disk is temporary, which is why the records live in the Turso database instead: they are kept
+through sleeps, restarts and redeploys. The ten starting records are added only when the table is empty.

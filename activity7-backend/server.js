@@ -63,7 +63,7 @@ app.get("/", (req, res) => {
 <body>
 <main>
   <h1>${PROJECT} <span>API</span></h1>
-  <p>A REST API for reporting and tracking campus maintenance problems such as broken lights, leaking taps and damaged furniture. Records are stored in an SQLite database.</p>
+  <p>A REST API for reporting and tracking campus maintenance problems such as broken lights, leaking taps and damaged furniture. Records are stored in a hosted SQLite database on Turso, so they are kept when the server restarts.</p>
   <div class="card">
     <p><strong style="color:#fff">Project:</strong> ${PROJECT}<br>
     <strong style="color:#fff">Student:</strong> ${STUDENT}, student number ${STUDENT_NO}<br>
@@ -120,7 +120,7 @@ app.get("/", (req, res) => {
   <p>Every error is JSON with a <code>message</code> field, for example <code>{"message":"Title must have 3 to 80 characters."}</code></p>
 
   <h2>Notes</h2>
-  <p>This service runs on a free hosting plan. If it has been idle, the first request can take up to a minute while it starts. The ten starting records are made up.</p>
+  <p>This service runs on a free hosting plan. If it has been idle, the first request can take up to a minute while it starts. Records are kept in the hosted database while the server sleeps or restarts. The ten starting records are made up.</p>
 </main>
 </body>
 </html>`);
@@ -156,7 +156,16 @@ app.use((error, req, res, next) => {
   res.status(500).json({ message: "Something went wrong on the server. Please try again." });
 });
 
+// Prepare the database first, then start accepting requests.
 const port = process.env.PORT || 3000;
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Server listening on port ${port}`);
-});
+pool.setup()
+  .then(count => {
+    console.log(`Database ready (${pool.where}) with ${count} records.`);
+    app.listen(port, "0.0.0.0", () => {
+      console.log(`Server listening on port ${port}`);
+    });
+  })
+  .catch(error => {
+    console.error("Could not prepare the database:", error);
+    process.exit(1);
+  });

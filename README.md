@@ -10,7 +10,7 @@ stages, each in its own folder.
 | Folder | Activity | What it is | Hosted on |
 |---|---|---|---|
 | [`activity6-frontend`](activity6-frontend) | 6 — Frontend development | HTML5, CSS and JavaScript interface with browser demonstration data (localStorage) | Netlify |
-| [`activity7-backend`](activity7-backend) | 7 — Backend development | Independent Node.js and Express REST API with an SQLite database | Render |
+| [`activity7-backend`](activity7-backend) | 7 — Backend development | Independent Node.js and Express REST API with a hosted SQLite database (Turso) | Render |
 | [`activity8-integration`](activity8-integration) | 8 — Frontend and backend integration | The Activity 6 interface reading and writing records through the Activity 7 API | Netlify |
 
 All three use the same record structure: `id`, `title`, `category`, `description` and `status`
