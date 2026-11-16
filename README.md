@@ -36,7 +36,7 @@ the website form asks for all of them. Each folder has its own README with setup
 |---|---|
 | 6 | https://campus-maintenance-a6-202511308.netlify.app |
 | 7 | https://campus-maintenance-api-202511308.onrender.com |
-| 8 | _to be added_ |
+| 8 | https://campus-maintenance-a8-202511308.netlify.app |
 
 ## Hosting settings
 
