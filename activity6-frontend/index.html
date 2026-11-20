@@ -7,167 +7,206 @@
   <meta name="description" content="Report broken sockets, leaking taps, damaged furniture and other faults on campus to the help desk, and track each report until it is fixed.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/styles.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%23FFC629'/%3E%3Cpath d='M20.5 7.5a5 5 0 0 0-6.3 6.3l-6.6 6.6a2 2 0 1 0 2.8 2.8l6.6-6.6a5 5 0 0 0 6.3-6.3l-3 3-2.8-.8-.8-2.8z' fill='%230D1B2E'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23D9AE52'/%3E%3Cpath d='M20.5 7.5a5 5 0 0 0-6.3 6.3l-6.6 6.6a2 2 0 1 0 2.8 2.8l6.6-6.6a5 5 0 0 0 6.3-6.3l-3 3-2.8-.8-.8-2.8z' fill='none' stroke='%2317130A' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <header class="site-header">
-    <nav class="nav" aria-label="Main">
+  <div class="shell">
+    <!-- Sidebar: brand, main navigation and live status counts -->
+    <header class="sidebar">
       <a class="brand" href="#home">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M15.5 3.5a4.5 4.5 0 0 0-5.7 5.7l-6 6a1.8 1.8 0 1 0 2.5 2.5l6-6a4.5 4.5 0 0 0 5.7-5.7l-2.7 2.7-2.5-.7-.7-2.5z"/></svg>
         </span>
         <span>Campus Maintenance</span>
       </a>
-      <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#manage">Manage Records</a></li>
-        <li><a href="#about">About</a></li>
-      </ul>
-      <div class="nav-actions">
-        <button type="button" class="btn btn-ghost theme-toggle" id="theme-toggle" aria-pressed="false">Light mode</button>
-        <a class="btn btn-primary" href="#manage">Report a fault</a>
-      </div>
-    </nav>
-  </header>
 
-  <main id="main-content">
-    <section id="home" class="hero" aria-labelledby="hero-title">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <h1 id="hero-title">Spotted something broken? Get it <span class="hl">fixed</span>.</h1>
-          <p class="lead">Report a fault anywhere on campus, from a dead socket or leaking tap to broken furniture or a faulty appliance. Your report goes straight to the Campus Help Desk, and you can track it until it is fixed.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary btn-lg" href="#manage">Report a fault</a>
-            <a class="btn btn-secondary btn-lg" href="#records">Track reports</a>
-          </div>
-        </div>
-        <ul class="status-board" aria-label="Reports by status">
-          <li class="status-tile" data-status="Pending">
-            <span class="tile-count" id="count-pending">0</span>
-            <span class="tile-label"><span class="dot dot-pending" aria-hidden="true"></span>Pending</span>
-          </li>
-          <li class="status-tile" data-status="In progress">
-            <span class="tile-count" id="count-progress">0</span>
-            <span class="tile-label"><span class="dot dot-progress" aria-hidden="true"></span>In progress</span>
-          </li>
-          <li class="status-tile" data-status="Completed">
-            <span class="tile-count" id="count-completed">0</span>
-            <span class="tile-label"><span class="dot dot-completed" aria-hidden="true"></span>Completed</span>
-          </li>
+      <nav class="side-nav" aria-label="Main">
+        <p class="side-label">Navigation</p>
+        <ul>
+          <li><a href="#home" class="nav-link">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+            <span>Home</span></a></li>
+          <li><a href="#manage" class="nav-link">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></svg>
+            <span>Manage Records</span><span class="nav-count" id="nav-total" aria-label="reports in total">0</span></a></li>
+          <li><a href="#about" class="nav-link">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 11v5M12 8v.01"/></svg>
+            <span>About</span></a></li>
+        </ul>
+      </nav>
+
+      <div class="side-status">
+        <p class="side-label">By status</p>
+        <ul>
+          <li><button type="button" class="status-link" data-filter="Pending"><span class="dot dot-pending" aria-hidden="true"></span>Pending<span class="nav-count" id="side-pending">0</span></button></li>
+          <li><button type="button" class="status-link" data-filter="In progress"><span class="dot dot-progress" aria-hidden="true"></span>In progress<span class="nav-count" id="side-progress">0</span></button></li>
+          <li><button type="button" class="status-link" data-filter="Completed"><span class="dot dot-completed" aria-hidden="true"></span>Completed<span class="nav-count" id="side-completed">0</span></button></li>
         </ul>
       </div>
-    </section>
 
-    <section id="manage" class="band" aria-labelledby="manage-title">
-      <div class="container band-grid">
-        <div class="band-copy">
-          <h2 id="manage-title">Report a fault to the help desk</h2>
-          <p>Tell the help desk who you are, where the problem is and what is wrong. Choose <strong>Edit</strong> on any report below to update it here.</p>
-          <h3 class="band-subhead">What each status means</h3>
-          <dl class="status-guide">
-            <div><dt><span class="dot dot-pending" aria-hidden="true"></span>Pending</dt><dd>The help desk has received your report and will assign it.</dd></div>
-            <div><dt><span class="dot dot-progress" aria-hidden="true"></span>In progress</dt><dd>A technician has been assigned and is working on the fault.</dd></div>
-            <div><dt><span class="dot dot-completed" aria-hidden="true"></span>Completed</dt><dd>The fault has been fixed and checked.</dd></div>
-          </dl>
+      <div class="side-foot">
+        <button type="button" class="btn btn-ghost btn-sm theme-toggle" id="theme-toggle" aria-pressed="false">Light mode</button>
+      </div>
+    </header>
+
+    <div class="content">
+    <main id="main-content">
+      <!-- Home: heading, short explanation and the numbers -->
+      <section id="home" class="section" aria-labelledby="hero-title">
+        <p class="crumb">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+          Home <span class="crumb-sep" aria-hidden="true">/</span> <span class="mono" id="period-label"></span>
+        </p>
+        <h1 id="hero-title">Campus maintenance <span class="muted">requests</span></h1>
+        <p class="lead">Students report faults on campus, from a dead socket or a leaking tap to broken furniture. The Campus Help Desk moves each report from Pending to In progress to Completed.</p>
+
+        <ul class="stats" aria-label="Reports by status">
+          <li class="stat stat-wide">
+            <p class="stat-label">Open reports</p>
+            <p class="stat-value" id="count-open">0</p>
+            <p class="stat-sub"><span id="open-share">0%</span> of <span id="count-total">0</span> reports still need work</p>
+            <div class="stat-bar" aria-hidden="true">
+              <span class="bar-pending" id="bar-pending"></span>
+              <span class="bar-progress" id="bar-progress"></span>
+              <span class="bar-completed" id="bar-completed"></span>
+            </div>
+          </li>
+          <li class="stat">
+            <p class="stat-label"><span class="dot dot-pending" aria-hidden="true"></span>Pending</p>
+            <p class="stat-value" id="count-pending">0</p>
+            <p class="stat-sub"><span class="tone-pending" id="share-pending">0%</span> of all reports</p>
+          </li>
+          <li class="stat">
+            <p class="stat-label"><span class="dot dot-progress" aria-hidden="true"></span>In progress</p>
+            <p class="stat-value" id="count-progress">0</p>
+            <p class="stat-sub"><span class="tone-progress" id="share-progress">0%</span> of all reports</p>
+          </li>
+          <li class="stat">
+            <p class="stat-label"><span class="dot dot-completed" aria-hidden="true"></span>Completed</p>
+            <p class="stat-value" id="count-completed">0</p>
+            <p class="stat-sub"><span class="tone-completed" id="share-completed">0%</span> of all reports</p>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Manage Records: the form -->
+      <section id="manage" class="section" aria-labelledby="manage-title">
+        <div class="section-head">
+          <h2 id="manage-title">Manage records</h2>
+          <p class="section-sub">Send a new report, or choose <strong>Edit</strong> on a report below to change it here.</p>
         </div>
 
-        <form id="record-form" class="form-card" novalidate>
-          <div class="form-head">
-            <h3 id="form-title">New fault report</h3>
-            <span class="form-id" id="form-id" hidden></span>
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="reporter_name">Your name</label>
-              <input id="reporter_name" name="reporter_name" type="text" maxlength="80" required
-                     aria-describedby="reporter_name-error" autocomplete="name">
-              <p class="error" id="reporter_name-error" aria-live="polite"></p>
+        <div class="manage-grid">
+          <form id="record-form" class="panel form-card" novalidate>
+            <div class="form-head">
+              <h3 id="form-title">New fault report</h3>
+              <span class="form-id" id="form-id" hidden></span>
             </div>
-            <div class="field">
-              <label for="student_number">Student number</label>
-              <input id="student_number" name="student_number" type="text" inputmode="numeric" maxlength="12" required
-                     aria-describedby="student_number-hint student_number-error" autocomplete="off">
-              <p class="hint" id="student_number-hint">6 to 12 digits</p>
-              <p class="error" id="student_number-error" aria-live="polite"></p>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="reporter_name">Your name</label>
+                <input id="reporter_name" name="reporter_name" type="text" maxlength="80" required
+                       aria-describedby="reporter_name-error" autocomplete="name">
+                <p class="error" id="reporter_name-error" aria-live="polite"></p>
+              </div>
+              <div class="field">
+                <label for="student_number">Student number</label>
+                <input id="student_number" name="student_number" type="text" inputmode="numeric" maxlength="12" required
+                       aria-describedby="student_number-hint student_number-error" autocomplete="off">
+                <p class="hint" id="student_number-hint">6 to 12 digits</p>
+                <p class="error" id="student_number-error" aria-live="polite"></p>
+              </div>
             </div>
-          </div>
 
-          <div class="field">
-            <label for="location">Location</label>
-            <input id="location" name="location" type="text" maxlength="100" required
-                   aria-describedby="location-hint location-error" autocomplete="off">
-            <p class="hint" id="location-hint">Building and room, e.g. "Room B12, Block B"</p>
-            <p class="error" id="location-error" aria-live="polite"></p>
-          </div>
+            <div class="field">
+              <label for="location">Location</label>
+              <input id="location" name="location" type="text" maxlength="100" required
+                     aria-describedby="location-hint location-error" autocomplete="off">
+              <p class="hint" id="location-hint">Building and room, e.g. "Room B12, Block B"</p>
+              <p class="error" id="location-error" aria-live="polite"></p>
+            </div>
 
-          <div class="field">
-            <label for="title">Fault title</label>
-            <input id="title" name="title" type="text" maxlength="80" required
-                   aria-describedby="title-hint title-error" autocomplete="off">
-            <p class="hint" id="title-hint">3 to 80 characters, e.g. "Socket not working"</p>
-            <p class="error" id="title-error" aria-live="polite"></p>
-          </div>
+            <div class="field">
+              <label for="title">Fault title</label>
+              <input id="title" name="title" type="text" maxlength="80" required
+                     aria-describedby="title-hint title-error" autocomplete="off">
+              <p class="hint" id="title-hint">3 to 80 characters, e.g. "Socket not working"</p>
+              <p class="error" id="title-error" aria-live="polite"></p>
+            </div>
 
-          <div class="field">
-            <label for="category">Category</label>
-            <select id="category" name="category" required aria-describedby="category-error">
-              <option value="">Choose a category</option>
-              <option>Electrical</option>
-              <option>Plumbing</option>
-              <option>Furniture</option>
-              <option>Appliances</option>
-              <option>IT &amp; Network</option>
-              <option>Building &amp; Grounds</option>
-              <option>Other</option>
-            </select>
-            <p class="error" id="category-error" aria-live="polite"></p>
-          </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="category">Category</label>
+                <select id="category" name="category" required aria-describedby="category-error">
+                  <option value="">Choose a category</option>
+                  <option>Electrical</option>
+                  <option>Plumbing</option>
+                  <option>Furniture</option>
+                  <option>Appliances</option>
+                  <option>IT &amp; Network</option>
+                  <option>Building &amp; Grounds</option>
+                  <option>Other</option>
+                </select>
+                <p class="error" id="category-error" aria-live="polite"></p>
+              </div>
+              <div class="field">
+                <label for="status">Status</label>
+                <select id="status" name="status" required aria-describedby="status-hint status-error">
+                  <option>Pending</option>
+                  <option>In progress</option>
+                  <option>Completed</option>
+                </select>
+                <p class="hint" id="status-hint">New reports start as Pending</p>
+                <p class="error" id="status-error" aria-live="polite"></p>
+              </div>
+            </div>
 
-          <div class="field">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" rows="4" maxlength="300" required
-                      aria-describedby="description-hint description-error"></textarea>
-            <p class="hint" id="description-hint">What is wrong and since when. <span id="description-count">0</span>/300 characters, at least 5</p>
-            <p class="error" id="description-error" aria-live="polite"></p>
-          </div>
+            <div class="field">
+              <label for="description">Description</label>
+              <textarea id="description" name="description" rows="4" maxlength="300" required
+                        aria-describedby="description-hint description-error"></textarea>
+              <p class="hint" id="description-hint">What is wrong and since when. <span class="mono"><span id="description-count">0</span>/300</span>, at least 5</p>
+              <p class="error" id="description-error" aria-live="polite"></p>
+            </div>
 
-          <div class="field">
-            <label for="status">Status</label>
-            <select id="status" name="status" required aria-describedby="status-hint status-error">
-              <option>Pending</option>
-              <option>In progress</option>
-              <option>Completed</option>
-            </select>
-            <p class="hint" id="status-hint">New reports start as Pending. The help desk updates it as the work goes on.</p>
-            <p class="error" id="status-error" aria-live="polite"></p>
-          </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="save-btn">Send report</button>
+              <button type="button" class="btn btn-secondary" id="cancel-edit" hidden>Cancel edit</button>
+            </div>
+          </form>
 
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary" id="save-btn">Send report</button>
-            <button type="button" class="btn btn-secondary" id="cancel-edit" hidden>Cancel edit</button>
-          </div>
-        </form>
-      </div>
-    </section>
+          <aside class="panel guide" aria-labelledby="guide-title">
+            <h3 id="guide-title">What each status means</h3>
+            <dl class="status-guide">
+              <div><dt><span class="dot dot-pending" aria-hidden="true"></span>Pending</dt><dd>Received by the help desk, waiting to be assigned.</dd></div>
+              <div><dt><span class="dot dot-progress" aria-hidden="true"></span>In progress</dt><dd>A technician is assigned and working on the fault.</dd></div>
+              <div><dt><span class="dot dot-completed" aria-hidden="true"></span>Completed</dt><dd>The fault has been fixed and checked.</dd></div>
+            </dl>
+          </aside>
+        </div>
+      </section>
 
-    <section id="records" class="records" aria-labelledby="records-title">
-      <div class="container">
-        <div class="records-head">
+      <!-- Record list with search, filter and count -->
+      <section id="records" class="section" aria-labelledby="records-title">
+        <div class="section-head section-head-row">
           <h2 id="records-title">All fault reports</h2>
           <p class="result-count" id="result-count" aria-live="polite"></p>
         </div>
 
         <div class="toolbar" role="search">
-          <div class="field field-inline">
+          <div class="field field-search">
             <label for="search">Search by title</label>
-            <input id="search" type="search" placeholder="e.g. socket, tap, chair" autocomplete="off">
+            <div class="input-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4"/></svg>
+              <input id="search" type="search" placeholder="e.g. socket, tap, chair" autocomplete="off">
+            </div>
           </div>
-          <div class="field field-inline">
+          <div class="field">
             <label for="filter-status">Filter by status</label>
             <select id="filter-status">
               <option value="">All statuses</option>
@@ -183,32 +222,35 @@
 
         <ul class="record-grid" id="record-list" aria-label="Fault reports"></ul>
         <p class="empty" id="empty-state" hidden></p>
-      </div>
-    </section>
+      </section>
 
-    <section id="about" class="about" aria-labelledby="about-title">
-      <div class="container about-grid">
-        <div>
+      <!-- About -->
+      <section id="about" class="section" aria-labelledby="about-title">
+        <div class="section-head">
           <h2 id="about-title">About this project</h2>
-          <p>Campus Maintenance Requests is a fault reporting system for students. Any student can report a problem around campus, such as a broken socket, a leaking tap, damaged furniture or a faulty appliance. Each report reaches the Campus Help Desk, which moves it from Pending to In progress to Completed, so students can see what is happening to their report.</p>
-          <p class="note"><strong>This version uses browser demonstration data.</strong> Reports are saved in this browser with localStorage, so they will not appear on another device or browser. The sample reports, names and student numbers are made up.</p>
         </div>
-        <dl class="facts">
-          <div><dt>Project</dt><dd>Campus Maintenance Requests</dd></div>
-          <div><dt>Student</dt><dd>Musenga Hope Sichula</dd></div>
-          <div><dt>Student number</dt><dd>202511308</dd></div>
-          <div><dt>Course</dt><dd>ICT251 Web Technologies, Activity 6</dd></div>
-        </dl>
-      </div>
-    </section>
-  </main>
+        <div class="about-grid">
+          <div class="about-copy">
+            <p>Campus Maintenance Requests is a fault reporting system for students. Any student can report a problem around campus, such as a broken socket, a leaking tap, damaged furniture or a faulty appliance. Each report reaches the Campus Help Desk, which moves it from Pending to In progress to Completed, so students can see what is happening to their report.</p>
+            <p class="note"><strong>This version uses browser demonstration data.</strong> Reports are saved in this browser with localStorage, so they will not appear on another device or browser. The sample reports, names and student numbers are made up.</p>
+          </div>
+          <dl class="panel facts">
+            <div><dt>Project</dt><dd>Campus Maintenance Requests</dd></div>
+            <div><dt>Student</dt><dd>Musenga Hope Sichula</dd></div>
+            <div><dt>Student number</dt><dd class="mono">202511308</dd></div>
+            <div><dt>Course</dt><dd>ICT251 Web Technologies, Activity 6</dd></div>
+          </dl>
+        </div>
+      </section>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
+    </main>
+
+    <footer class="site-footer">
       <p>Campus Maintenance Requests, Mulungushi University</p>
-      <p>Musenga Hope Sichula, 202511308</p>
+      <p class="mono">Musenga Hope Sichula · 202511308</p>
+    </footer>
     </div>
-  </footer>
+  </div>
 
   <dialog id="view-dialog" class="view-dialog" aria-labelledby="view-title">
     <div class="dialog-body">
@@ -224,7 +266,7 @@
         <div><dt>Status</dt><dd id="view-status"></dd></div>
         <div class="full"><dt>Location</dt><dd id="view-location"></dd></div>
         <div><dt>Reported by</dt><dd id="view-reporter"></dd></div>
-        <div><dt>Student number</dt><dd id="view-student-number"></dd></div>
+        <div><dt>Student number</dt><dd id="view-student-number" class="mono"></dd></div>
         <div class="full"><dt>Description</dt><dd id="view-description"></dd></div>
       </dl>
       <form method="dialog" class="dialog-actions">

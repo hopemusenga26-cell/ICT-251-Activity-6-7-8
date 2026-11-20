@@ -140,7 +140,7 @@ function makeCard(record) {
   category.textContent = record.category;
   const number = document.createElement("span");
   number.className = "card-id";
-  number.textContent = `Report #${record.id}`;
+  number.textContent = `#${String(record.id).padStart(3, "0")}`;
   meta.append(category, number);
   top.append(icon, meta, makeBadge(record.status));
 
@@ -197,9 +197,31 @@ function render() {
     emptyState.hidden = true;
   }
 
-  $("count-pending").textContent = records.filter(r => r.status === "Pending").length;
-  $("count-progress").textContent = records.filter(r => r.status === "In progress").length;
-  $("count-completed").textContent = records.filter(r => r.status === "Completed").length;
+  renderStats();
+}
+
+// Status numbers: each one shows what it is compared to (share of all reports).
+function renderStats() {
+  const total = records.length;
+  const count = status => records.filter(r => r.status === status).length;
+  const share = n => (total ? Math.round((n / total) * 100) : 0);
+  const pending = count("Pending");
+  const progress = count("In progress");
+  const completed = count("Completed");
+  const open = pending + progress;
+
+  $("count-total").textContent = total;
+  $("nav-total").textContent = total;
+  $("count-open").textContent = open;
+  $("open-share").textContent = `${share(open)}%`;
+
+  const parts = [["pending", pending], ["progress", progress], ["completed", completed]];
+  for (const [key, n] of parts) {
+    $(`count-${key}`).textContent = n;
+    $(`side-${key}`).textContent = n;
+    $(`share-${key}`).textContent = `${share(n)}%`;
+    $(`bar-${key}`).style.width = `${share(n)}%`;
+  }
 }
 
 // Load every record from the data service and redraw the page.
@@ -395,6 +417,35 @@ for (const link of document.querySelectorAll("[data-api-path]")) {
   link.href = API_BASE_URL + link.dataset.apiPath;
 }
 if ($("api-url") && API_BASE_URL) $("api-url").textContent = API_BASE_URL;
+
+/* ---------- Sidebar: status shortcuts, current section, date ---------- */
+
+// A status in the sidebar applies the same filter as the toolbar.
+for (const button of document.querySelectorAll(".status-link")) {
+  button.addEventListener("click", () => {
+    filterSelect.value = button.dataset.filter;
+    render();
+    $("records").scrollIntoView();
+  });
+}
+
+// Mark the nav link of the section in view.
+const navLinks = [...document.querySelectorAll(".nav-link")];
+const sectionFor = { home: "#home", manage: "#manage", records: "#manage", about: "#about" };
+const observer = new IntersectionObserver(entries => {
+  for (const entry of entries) {
+    if (!entry.isIntersecting) continue;
+    const href = sectionFor[entry.target.id];
+    for (const link of navLinks) {
+      if (link.getAttribute("href") === href) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
+    }
+  }
+}, { rootMargin: "-40% 0px -55% 0px" });
+for (const id of Object.keys(sectionFor)) observer.observe($(id));
+
+// Breadcrumb date, e.g. "November 2026".
+$("period-label").textContent = new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" });
 
 applyTheme(readTheme());
 loadRecords();
